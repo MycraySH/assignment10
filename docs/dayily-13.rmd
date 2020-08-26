@@ -1,3 +1,12 @@
+---
+title: "Daily Assignment 13"
+author: "[Stone Shi](https://mycraysh.github.io/StoneGIS/)"
+subtitle: 'GEOG 176A'
+output:
+  html_document:
+    theme: journal
+---
+
 ```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(sf)
