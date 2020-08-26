@@ -1,0 +1,37 @@
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(sf)
+library(rmapshaper)
+```
+
+```{r, warning = FALSE, message = FALSE}
+mapdata = USAboundaries::us_states() %>%
+  filter(!state_name %in% c("Puerto Rico", "Alaska", "Hawaii")) %>%
+  st_transform(5070)
+
+#The Original US map
+plot(mapdata$geometry)
+
+#Number of Points in Original Map is:
+mapview::npts(mapdata)
+```
+
+#Map after st_simplify
+```{r, warning = FALSE, message = FALSE}
+map10000 = st_simplify(mapdata, preserveTopology = TRUE,dTolerance = 10000)
+
+plot(map10000$geometry)
+
+#Number of Points in the Map after  St_Simplify:
+mapview::npts(map10000)
+```
+
+#Map after ms_simplify 
+```{r, warning = FALSE, message = FALSE}
+map01  = ms_simplify(mapdata, keep = .01)
+
+plot(map01$geometry)
+
+#Number of Points in the Map after  ms_Simplify:
+mapview::npts(map01)
+```
