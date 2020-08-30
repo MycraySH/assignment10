@@ -1,0 +1,40 @@
+---
+title: "Daily Assignment 16"
+author: "[Stone Shi](https://mycraysh.github.io/StoneGIS/)"
+subtitle: 'GEOG 176A'
+output:
+  html_document:
+    theme: journal
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(sf)
+library(rmapshaper)
+library(leaflet)
+library(USAboundaries)
+```
+
+```{r, warning = FALSE, message = FALSE}
+leaflet() %>% 
+  setView(lng=-119.8489, lat=34.4140,zoom = 16) %>%
+  addProviderTiles(providers$Esri.WorldImagery) %>%
+  addProviderTiles(providers$CartoDB, options = providerTileOptions(opacity = .5)) %>% 
+  addMarkers(data = starbucks, popup = ~store_name, label = ~city)
+
+starbucks = read_csv('D:/LifeInUCSB/Study/GEOG176A/week4/lecture-16/data/directory.csv') %>% 
+  filter(City %in% c("Goleta", "Santa Barbara")) %>% 
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>% 
+  select(store_name = `Store Name`, phone = `Phone Number`, address = `Street Address`, city = City, brand = Brand) %>% 
+  mutate(url = paste0('https://www.google.com/maps/place/',
+                      gsub(" ", "+", address), "+",
+                      gsub(" ", "+", city)))
+
+pop = paste0('<a href=', starbucks$url, '>', starbucks$store_name, "</a>")
+
+icons = awesomeIcons(icon = 'coffee', markerColor = "white", library = 'fa', spin = TRUE)
+
+leaflet(data = starbucks) %>% 
+  addProviderTiles(providers$CartoDB) %>% 
+  addAwesomeMarkers(icon = icons, label = ~address, popup = pop)
+
+```
