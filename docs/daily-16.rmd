@@ -18,8 +18,8 @@ library(USAboundaries)
 leaflet() %>% 
   setView(lng=-119.8489, lat=34.4140,zoom = 16) %>%
   addProviderTiles(providers$Esri.WorldImagery) %>%
-  addProviderTiles(providers$CartoDB, options = providerTileOptions(opacity = .5)) %>% 
-  addMarkers(data = starbucks, popup = ~store_name, label = ~city)
+  addProviderTiles(providers$CartoDB, options = providerTileOptions(opacity = .5))
+ 
 
 starbucks = read_csv('D:/LifeInUCSB/Study/GEOG176A/week4/lecture-16/data/directory.csv') %>% 
   filter(City %in% c("Goleta", "Santa Barbara")) %>% 
@@ -28,6 +28,7 @@ starbucks = read_csv('D:/LifeInUCSB/Study/GEOG176A/week4/lecture-16/data/directo
   mutate(url = paste0('https://www.google.com/maps/place/',
                       gsub(" ", "+", address), "+",
                       gsub(" ", "+", city)))
+   
 
 pop = paste0('<a href=', starbucks$url, '>', starbucks$store_name, "</a>")
 
