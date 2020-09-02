@@ -42,15 +42,15 @@ eleplot = get_elev_raster(uscities, z = 11) %>%
 
 
 ```{r, warning = FALSE, message = FALSE}
-r = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/goleta-elev.tif")
+ras = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/goleta-elev.tif")
 threshold = function(x) {ifelse(x <= 0 , NA, 1)}
-m = calc(r, threshold)
+thre_ras = calc(ras, threshold)
 
-ocean_cut = m * r
+isoland = thre_ras * ras
 
-rcl = data.frame(min = seq(0,500,100),max =  seq(100,600, 100), lab = c(0:5))
-rc = reclassify(ocean_cut, rcl, lowerTRUE = TRUE)
-s = stack(m, ocean_cut, rc) %>% 
+rclass1 = data.frame(min = seq(0,500,100),max =  seq(100,600, 100), lab = c(0:5))
+rclass2 = reclassify(isoland, rclass1, lowerTRUE = TRUE)
+stac = stack(thre_ras, isoland, rclass2) %>% 
   setNames(c( "mask","elevation", "topo.bounds"))
-plot(s, col = viridis::viridis(256))
+plot(stac, col = viridis::viridis(256))
 ```
