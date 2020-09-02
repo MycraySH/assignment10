@@ -1,0 +1,41 @@
+---
+title: "Daily Assignment 17"
+author: "[Stone Shi](https://mycraysh.github.io/StoneGIS/)"
+subtitle: 'GEOG 176A'
+output:
+  html_document:
+    theme: journal
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(sf)
+library(raster)
+library(rgdal)
+library(rmapshaper)
+library(USAboundaries)
+library(elevatr)
+```
+
+```{r, warning = FALSE, message = FALSE}
+
+uscities = readr::read_csv("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/uscities.csv") %>%
+  st_as_sf(coords = c("lng", "lat"), crs = 4326) %>%
+  filter(city == "Goleta") %>%
+  st_transform(5070) %>% 
+  st_buffer(5000)
+st_bbox(uscities) %>% 
+  st_as_sfc() %>%
+  st_as_sf()
+
+eleplot = get_elev_raster(uscities, z = 11) %>% 
+  crop(uscities) %>%
+  plot()
+
+```
+```{r, warning = FALSE, message = FALSE}
+#Properties
+#This Raster shows the elevation change of Goleta.
+#The bbox value includes the x and y variables.
+#After creating the bbox value, I added a z value to represent the scaling above the plane.
+#On the right side of the plot is a legend that shows what color the elevation data is represented in.
+```
