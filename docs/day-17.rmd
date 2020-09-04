@@ -14,6 +14,8 @@ library(rgdal)
 library(rmapshaper)
 library(USAboundaries)
 library(elevatr)
+library(osmdata)
+library(leaflet)
 ```
 
 ```{r, warning = FALSE, message = FALSE}
@@ -50,7 +52,29 @@ isoland = thre_ras * ras
 
 rclass1 = data.frame(min = seq(0,500,100),max =  seq(100,600, 100), lab = c(0:5))
 rclass2 = reclassify(isoland, rclass1, lowerTRUE = TRUE)
-stac = stack(thre_ras, isoland, rclass2) %>% 
-  setNames(c( "mask","elevation", "topo.bounds"))
+stac = stack(ras,thre_ras, isoland, rclass2) %>% 
+  setNames(c( "elevation","mask","terrain", "topo.bounds"))
 plot(stac, col = viridis::viridis(256))
+```
+
+#day19
+```{r, warning = FALSE, message = FALSE}
+bb  = st_bbox(s) %>% 
+  st_as_sfc() %>% 
+  st_transform(4326)
+
+osm = osmdata::opq(bb) %>% 
+  add_osm_feature(key = 'amenity', value = "restaurant") %>% 
+  osmdata_sf()
+restaurant = osm$osm_points 
+
+elevation = raster::extract(ras, restaurant)
+restaurant2 = restaurant %>%
+  mutate(elevation = elevation) %>% 
+  dplyr::select(osm_id, name, amenity,elevation) %>% 
+  dplyr::filter(!is.na(name)) 
+
+leaflet() %>%
+  addProviderTiles(providers$CartoDB) %>% 
+  addMarkers(data = restaurant2, popup = ~as.character(elevation), label = ~name)
 ```
