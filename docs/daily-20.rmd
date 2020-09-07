@@ -1,0 +1,31 @@
+---
+title: "Daily Assignment 20"
+author: "[Stone Shi](https://mycraysh.github.io/StoneGIS/)"
+subtitle: 'GEOG 176A'
+output:
+  html_document:
+    theme: journal
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(climateR)
+library(raster)
+params = c("prcp", "water_deficit", "aet", "pet")
+AOI = USAboundaries::us_states() %>% filter(name == "California")
+co = getTerraClim(AOI, params, startDate = "2018-09-01")  %>% 
+  stack() %>% 
+  setNames(params)
+
+plot(co)
+
+values = values(co)
+head(values)
+idx = which(!is.na(values))
+v = na.omit(values)
+vs = scale(v)
+E = kmeans(vs,5, iter.max = 100)
+clus_raster = co$aet
+values(clus_raster) = NA
+clus_raster[idx] <- E$cluster
+plot(clus_raster, col = RColorBrewer::brewer.pal(5, "Spectral"))
+```
