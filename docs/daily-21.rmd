@@ -1,0 +1,51 @@
+---
+title: "Daily Assignment 21"
+author: "[Stone Shi](https://mycraysh.github.io/StoneGIS/)"
+subtitle: 'GEOG 176A'
+output:
+  html_document:
+    theme: journal
+---
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(climateR)
+library(raster)
+library(whitebox)
+library(sf)
+```
+
+```{r, warning = FALSE, message = FALSE}
+mo = AOI::aoi_get("Mount Saint Helens") %>% 
+  AOI::aoi_buffer(.5)
+elev  = elevatr::get_elev_raster(mo, z = 12) 
+writeRaster(elev, "D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-elev.tif", overwrite = TRUE)
+#raster
+#hillshade
+wbt_hillshade("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-elev.tif", "D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-hillshade.tif")
+
+#slope
+wbt_slope("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-elev.tif", "D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-slope.tif")
+
+#aspect
+wbt_aspect("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-elev.tif", "D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-aspect.tif")
+
+```
+
+```{r, warning = FALSE, message = FALSE}
+raselev = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-elev.tif")
+plot(raselev, box = FALSE,axes = FALSE,  col = viridis::viridis(256), main = "elevation")
+
+rashill = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-hillshade.tif")
+plot(rashill, box = FALSE,axes = FALSE,  col = gray.colors(256), alpha = .8, main = "hillshade")
+
+rasslope = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-slope.tif")
+plot(rasslope, box = FALSE,axes = FALSE,  col =terrain.colors(256),main = "slope")
+
+rasasp = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-aspect.tif")
+plot(rasasp, box = FALSE,axes = FALSE, col = rainbow(8),main = "aspect")
+
+stac = stack(raselev,rashill,rasslope, rasasp) %>% 
+  setNames(c( "elevation","hillshade","slope", "aspect"))
+plot(stac, box = FALSE,axes = FALSE)
+```
