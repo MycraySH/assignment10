@@ -42,10 +42,7 @@ plot(rashill, box = FALSE,axes = FALSE,  col = gray.colors(256), alpha = .8, mai
 rasslope = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-slope.tif")
 plot(rasslope, box = FALSE,axes = FALSE,  col =terrain.colors(256),main = "slope")
 
-rasasp = raster("D:/LifeInUCSB/Study/GEOG176A/week3/assignment10/data/mount-sh-aspect.tif")
+rasasp = raster("../data/mount-sh-aspect.tif")
 plot(rasasp, box = FALSE,axes = FALSE, col = rainbow(8),main = "aspect")
 
-stac = stack(raselev,rashill,rasslope, rasasp) %>% 
-  setNames(c( "elevation","hillshade","slope", "aspect"))
-plot(stac, box = FALSE,axes = FALSE)
 ```
